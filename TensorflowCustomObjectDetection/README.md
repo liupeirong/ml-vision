@@ -3,14 +3,13 @@
 ## Problem to solve
 Given a collection of images with a target object in many different shapes, lights, poses and numbers, train a model so that given a new image, a bounding box will be drawn around each of the target objects if they are present in the image.
 
-- [Custom object detection using Tensorflow Object Detection API](#custom-object-detection-using-tensorflow-object-detection-api)
-  - [Problem to solve](#problem-to-solve)
-    - [Step 1 - Label the iamges](#step-1---label-the-iamges)
-    - [Step 2 - Prepare the labeled images as input](#step-2---prepare-the-labeled-images-as-input)
-    - [Step 3 - Install Tensorflow Object Detection API](#step-3---install-tensorflow-object-detection-api)
-    - [Step 4 - Configure an object detection pipeline for training](#step-4---configure-an-object-detection-pipeline-for-training)
-    - [Step 5 - Train and evalute the pipeline](#step-5---train-and-evalute-the-pipeline)
-    - [Step 6 - Export the trained model for inferencing.](#step-6---export-the-trained-model-for-inferencing)
+## Steps to take
+  - [Step 1 - Label the iamges](#step-1---label-the-iamges)
+  - [Step 2 - Prepare the labeled images as input](#step-2---prepare-the-labeled-images-as-input)
+  - [Step 3 - Install Tensorflow Object Detection API](#step-3---install-tensorflow-object-detection-api)
+  - [Step 4 - Configure an object detection pipeline for training](#step-4---configure-an-object-detection-pipeline-for-training)
+  - [Step 5 - Train and evalute the pipeline](#step-5---train-and-evalute-the-pipeline)
+  - [Step 6 - Export the trained model for inferencing.](#step-6---export-the-trained-model-for-inferencing)
   - [Common errors and solutions](#common-errors-and-solutions)
 
 ### Step 1 - Label the iamges
@@ -21,13 +20,15 @@ You can use tools such as [VoTT](https://github.com/Microsoft/VoTT) or [LabelImg
     - Draw a bounding box for each occurance of the target object, helmet, in that image, 
     - The default label is already applied, click on any other applicable label  
 - Export to Pascal VOC format, the output folder will look like this:
-    + +Annotations (contains the label info in xml for each image)  
-    + +ImageSets  
-      + +Main  
-        + -{label}_train.txt  
-        + -{label}_val.txt  
-    + +JPEGImages (contains the image files)  
-    + -pascal_label_map.pbtxt (map of label and id)
+```
+    +Annotations (contains the label info in xml for each image)  
+    +ImageSets  
+      +Main  
+        -{label}_train.txt  
+        -{label}_val.txt  
+    +JPEGImages (contains the image files)  
+    -pascal_label_map.pbtxt (map of label and id)
+```
 
 ### Step 2 - Prepare the labeled images as input
 Tensorflow Object Detection API takes TFRecords as input, so we need to convert Pascal VOC data to TFRecords.  The script to do the convertion is located in the [object_detection/dataset_tools folder](https://github.com/tensorflow/models/tree/master/research/object_detection/dataset_tools).  You need to modify one of the files such as ```create_pascal_tf_record.py``` or ```create_pet_tf_record.py``` to convert your data.  Pick a script that converts data format close to yours.  Here we pick ```create_pascal_tf_record.py``` as our template, and modified [it](/TensorflowCustomObjectDetection/create_helmet_tf_record.py) to convert our VoTT output above.  Don't worry about making a mistake here, you will quickly see an error when you run the following command if you made a mistake.  Run the script to convert input data to TFRecords: 
@@ -49,6 +50,7 @@ Instead of starting from scratch, pick an Azure [Data Science VM](https://azurem
 Instead of creating a model from scratch, a common practice is to train a pre-trained model listed in [Tensorflow Detection Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md) on your own dataset. These models are trained on well known datasets which may not include the type of object you are trying to detect, but we can leverage transfer learning to train these models to detect new types of object.  If you don't have GPU, pick a faster model over a more accurate one.  Here, we choose ssd_mobilenet_v1_coco. 
 
 -  Download the pre-trained ssd_mobilenet_v1_coco from [Tensorflow Detection Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md).  It should include the following files:  
+```
    -checkpoint  
    -frozen_inference_graph.pb  
    -model.ckpt.data-00000-of-00001  
@@ -56,6 +58,7 @@ Instead of creating a model from scratch, a common practice is to train a pre-tr
    -model.ckpt.meta  
    -pipeline.config  
    -saved_model/saved_model.pb
+```
 
 -  Since we have a lot of artifacts, including input image data, TFRecords, pre-trained model, and training output, it's a good idea to organize the directory similar to what's suggested on [Tensorflow Object Detection github] (https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/running_locally.md#recommended-directory-structure-for-training-and-evaluation).  Our directory looks like this:
    +helmet_detection  
