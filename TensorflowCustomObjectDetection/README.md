@@ -60,13 +60,15 @@ Instead of creating a model from scratch, a common practice is to train a pre-tr
    -saved_model/saved_model.pb
 ```
 
--  Since we have a lot of artifacts, including input image data, TFRecords, pre-trained model, and training output, it's a good idea to organize the directory similar to what's suggested on [Tensorflow Object Detection github] (https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/running_locally.md#recommended-directory-structure-for-training-and-evaluation).  Our directory looks like this:
+-  Since we have a lot of artifacts, including input image data, TFRecords, pre-trained model, and training output, it's a good idea to organize the directory similar to what's suggested on [Tensorflow Object Detection github](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/running_locally.md#recommended-directory-structure-for-training-and-evaluation).  Our directory looks like this:
+```
    +helmet_detection  
      +data (contains the output from VoTT)  
      +tfrecords (contains generated tfrecords)  
      +models  
        +ssd_mobilenet_v1_coco (contains downloaded ssd_mobilenet_v1_coco model)  
          +train (contains the training output files)
+```
 
 -  Edit pipeline.config with the following main modifications.  See our [sample config](/TensorflowCustomObjectDetection/pipeline.config).
    -  ```num_classes``` should be 1 if you are detecting one type of objects
@@ -88,9 +90,11 @@ If your images are of low quality, or the target object is very hard to detect i
 
 ### Step 6 - Export the trained model for inferencing.
 -  Pick a checkpoint in the training output folder which contains the following 3 files:  
+```
     -model.ckpt-{checkpoint#}.data-00000-of-00001  
     -model.ckpt-{checkpoint#}.index  
     -model.ckpt-{checkpoint#}.meta  
+```
 -  From the tensorflow/models/research folder, run
   ```bash
   python object_detection/export_inference_graph.py --input_type=image_tensor --pipeline_config_path=path/to/pipeline.config --trained_checkpoint_prefix=path/to/training_output --output_directory=path/to/output_model_for_inference
