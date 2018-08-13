@@ -33,7 +33,8 @@ You can use tools such as [VoTT](https://github.com/Microsoft/VoTT) or [LabelImg
 ### Step 2 - Prepare the labeled images as input
 Tensorflow Object Detection API takes TFRecords as input, so we need to convert Pascal VOC data to TFRecords.  The script to do the convertion is located in the [object_detection/dataset_tools folder](https://github.com/tensorflow/models/tree/master/research/object_detection/dataset_tools).  You need to modify one of the files such as ```create_pascal_tf_record.py``` or ```create_pet_tf_record.py``` to convert your data.  Pick a script that converts data format close to yours.  Here we pick ```create_pascal_tf_record.py``` as our template, and modified [it](/TensorflowCustomObjectDetection/create_helmet_tf_record.py) to convert our VoTT output above.  Don't worry about making a mistake here, you will quickly see an error when you run the following command if you made a mistake.  Run the script to convert input data to TFRecords: 
 ```bash
-python object_detection/dataset_tools/{my_create_tf_record}.py --data_dir=path/to/VoTToutputFolder --output_dir=path/to/TFRecordsOutput
+python object_detection/dataset_tools/{my_create_tf_record}.py --set=train --data_dir=path/to/VoTToutputFolder --output_dir=path/to/TFRecordsOutput
+python object_detection/dataset_tools/{my_create_tf_record}.py --set=val --data_dir=path/to/VoTToutputFolder --output_dir=path/to/TFRecordsOutput
 ``` 
 
 ### Step 3 - Install Tensorflow Object Detection API
@@ -88,7 +89,7 @@ tensorboard --logdir=path/to/training_output
 ```
 If your images are of low quality, or the target object is very hard to detect in the images, or you have few images (less than 50), the mean average precision and total loss may appear erratic and unable to converge even after training for long time.  Start with easy to detect object and good quality images.   
 
-### Step 6 - Export the trained model for inferencing.
+### Step 6 - Export the trained model for inferencing
 -  Pick a checkpoint in the training output folder which contains the following 3 files:  
 ```
     -model.ckpt-{checkpoint#}.data-00000-of-00001  
@@ -99,7 +100,7 @@ If your images are of low quality, or the target object is very hard to detect i
   ```bash
   python object_detection/export_inference_graph.py --input_type=image_tensor --pipeline_config_path=path/to/pipeline.config --trained_checkpoint_prefix=path/to/training_output --output_directory=path/to/output_model_for_inference
   ```
--  Modify [object_detection/object_detection_tutorial.ipynb](https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb) to use our trained model and our test image.  Here's our [sample notebook](TODO). 
+-  Modify [object_detection/object_detection_tutorial.ipynb](https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb) to use our trained model and our test image.  Here's our [sample notebook -- TODO](TODO). 
   
 ## Common errors and solutions
 I've encountered the following main issues in this process of custom object detection.  With some research, I found that the community has found resolutions or workaround. 
