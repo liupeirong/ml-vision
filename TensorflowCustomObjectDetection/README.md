@@ -98,9 +98,9 @@ If your images are of low quality, or the target object is very hard to detect i
 ```
 -  From the tensorflow/models/research folder, run
   ```bash
-  python object_detection/export_inference_graph.py --input_type=image_tensor --pipeline_config_path=path/to/pipeline.config --trained_checkpoint_prefix=path/to/training_output --output_directory=path/to/output_model_for_inference
+  python object_detection/export_inference_graph.py --input_type=image_tensor --pipeline_config_path=path/to/pipeline.config --trained_checkpoint_prefix=path/to/training_output_dir/model.ckpt-{checkpoint#} --output_directory=path/to/output_model_files_for_inference
   ```
--  Modify [object_detection/object_detection_tutorial.ipynb](https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb) to use our trained model and our test image.  Here's our [sample notebook -- TODO](TODO). 
+-  Modify [object_detection/object_detection_tutorial.ipynb](https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb) to use our trained model and our test image.  Here's our [sample notebook](/TensorflowCustomObjectDetection/helmet_detection.ipynb). 
   
 ## Common errors and solutions
 I've encountered the following main issues in this process of custom object detection.  With some research, I found that the community has found resolutions or workaround. 
