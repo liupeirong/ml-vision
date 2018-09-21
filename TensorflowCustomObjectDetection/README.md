@@ -4,7 +4,7 @@
 Given a collection of images with a target object in many different shapes, lights, poses and numbers, train a model so that given a new image, a bounding box will be drawn around each of the target objects if they are present in the image.
 
 ## Steps to take
-  - [Step 1 - Label the iamges](#step-1---label-the-iamges)
+  - [Step 1 - Label the images](#step-1---label-the-images)
   - [Step 2 - Prepare the labeled images as input](#step-2---prepare-the-labeled-images-as-input)
   - [Step 3 - Install Tensorflow Object Detection API](#step-3---install-tensorflow-object-detection-api)
   - [Step 4 - Configure an object detection pipeline for training](#step-4---configure-an-object-detection-pipeline-for-training)
@@ -12,7 +12,7 @@ Given a collection of images with a target object in many different shapes, ligh
   - [Step 6 - Export the trained model for inferencing.](#step-6---export-the-trained-model-for-inferencing)
   - [Common errors and solutions](#common-errors-and-solutions)
 
-### Step 1 - Label the iamges
+### Step 1 - Label the images
 You can use tools such as [VoTT](https://github.com/Microsoft/VoTT) or [LabelImg](https://github.com/tzutalin/labelImg) to label images.  Here we use VoTT to output data in Pascal VOC format. 
 - Open the folder which contains your collection of images
 - Put in labels.  You can train the model to recognize multiple types of objects, but here we will only recognize one type of objects, say, helmets.  
