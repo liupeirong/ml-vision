@@ -5,8 +5,8 @@ Given a collection of images with a target object in many different shapes, ligh
 
 ## Steps to take
   - [Step 1 - Label the images](#step-1---label-the-images)
-  - [Step 2 - Prepare the labeled images as input](#step-2---prepare-the-labeled-images-as-input)
-  - [Step 3 - Install Tensorflow Object Detection API](#step-3---install-tensorflow-object-detection-api)
+  - [Step 2 - Install Tensorflow Object Detection API](#step-2---install-tensorflow-object-detection-api)
+  - [Step 3 - Prepare the labeled images as input](#step-3---prepare-the-labeled-images-as-tensorflow-input)
   - [Step 4 - Configure an object detection pipeline for training](#step-4---configure-an-object-detection-pipeline-for-training)
   - [Step 5 - Train and evalute the pipeline](#step-5---train-and-evalute-the-pipeline)
   - [Step 6 - Export the trained model for inferencing.](#step-6---export-the-trained-model-for-inferencing)
@@ -30,14 +30,7 @@ You can use tools such as [VoTT](https://github.com/Microsoft/VoTT) or [LabelImg
     -pascal_label_map.pbtxt (map of label and id)
 ```
 
-### Step 2 - Prepare the labeled images as input
-Tensorflow Object Detection API takes TFRecords as input, so we need to convert Pascal VOC data to TFRecords.  The script to do the convertion is located in the [object_detection/dataset_tools folder](https://github.com/tensorflow/models/tree/master/research/object_detection/dataset_tools).  You need to modify one of the files such as ```create_pascal_tf_record.py``` or ```create_pet_tf_record.py``` to convert your data.  Pick a script that converts data format close to yours.  Here we pick ```create_pascal_tf_record.py``` as our template, and modified [it](/TensorflowCustomObjectDetection/create_helmet_tf_record.py) to convert our VoTT output above.  Don't worry about making a mistake here, you will quickly see an error when you run the following command if you made a mistake.  Run the script to convert input data to TFRecords: 
-```bash
-python object_detection/dataset_tools/{my_create_tf_record}.py --set=train --data_dir=path/to/VoTToutputFolder --output_dir=path/to/TFRecordsOutput
-python object_detection/dataset_tools/{my_create_tf_record}.py --set=val --data_dir=path/to/VoTToutputFolder --output_dir=path/to/TFRecordsOutput
-``` 
-
-### Step 3 - Install Tensorflow Object Detection API
+### Step 2 - Install Tensorflow Object Detection API
 Instead of starting from scratch, pick an Azure [Data Science VM](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/microsoft-ads.linux-data-science-vm-ubuntu), or [Deep Learning VM](https://azuremarketplace.microsoft.com/en-ca/marketplace/apps/microsoft-ads.dsvm-deep-learning) which has GPU attached.  This saves a lot of setup steps because the VMs come with a plethora of machine learning frameworks and tools installed, including Tensorflow.  We will use a Ubuntu 16.04 based DSVM here.  As for the VM size, you can start with a small size such as DS2_v3.  But when it's time to train, you'll need to scale it to a larger size, otherwise it will probably take many days to train on hundreds of images. 
 -  Install Tensorflow [Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection)
     -  ```git clone https://github.com/tensorflow/models.git```
@@ -46,6 +39,13 @@ Instead of starting from scratch, pick an Azure [Data Science VM](https://azurem
     -  To check Tensorflow version, run ```python3 -c 'import tensorflow as tf; print(tf.__version__)'```
     -  To check Tensorflow installation location, run ```python3 -c 'help("tensorflow")'```
     -  Since the git cloned API is always the latest, run ```pip3 install --upgrade tensorflow-gpu``` to update Tensorflow to the latest.
+
+### Step 3 - Prepare the labeled images as Tensorflow input
+Tensorflow Object Detection API takes TFRecords as input, so we need to convert Pascal VOC data to TFRecords.  The script to do the convertion is located in the [object_detection/dataset_tools folder](https://github.com/tensorflow/models/tree/master/research/object_detection/dataset_tools).  You need to modify one of the files such as ```create_pascal_tf_record.py``` or ```create_pet_tf_record.py``` to convert your data.  Pick a script that converts data format close to yours.  Here we pick ```create_pascal_tf_record.py``` as our template, and modified [it](/TensorflowCustomObjectDetection/create_helmet_tf_record.py) to convert our VoTT output above.  Don't worry about making a mistake here, you will quickly see an error when you run the following command if you made a mistake.  Run the script to convert input data to TFRecords: 
+```bash
+python object_detection/dataset_tools/{my_create_tf_record}.py --set=train --data_dir=path/to/VoTToutputFolder --output_dir=path/to/TFRecordsOutput
+python object_detection/dataset_tools/{my_create_tf_record}.py --set=val --data_dir=path/to/VoTToutputFolder --output_dir=path/to/TFRecordsOutput
+``` 
 
 ### Step 4 - Configure an object detection pipeline for training
 Instead of creating a model from scratch, a common practice is to train a pre-trained model listed in [Tensorflow Detection Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md) on your own dataset. These models are trained on well known datasets which may not include the type of object you are trying to detect, but we can leverage transfer learning to train these models to detect new types of object.  If you don't have GPU, pick a faster model over a more accurate one.  Here, we choose ssd_mobilenet_v1_coco. 
